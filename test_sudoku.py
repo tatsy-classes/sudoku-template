@@ -1,12 +1,13 @@
 import os
 import re
-import sys
 import glob
 
 import cv2
 import numpy as np
 import pytest
+import colorama
 from sudoku import solve
+from colorama import Fore
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 EXTRA_DIR = os.path.join(CUR_DIR, "extra")
@@ -47,15 +48,17 @@ class Sudoku(object):
 def score():
     score = np.zeros((1), dtype="int32")
     yield score
-    print("\n\nYour score is {:d}".format(score.item()))
+    print("\n\n")
+    print(Fore.BLUE + "[INFO] Your score:  {:d}".format(score.item()), flush=True, end="")
 
 
 @pytest.mark.parametrize("image_path, level", get_test_data())
 def test_solve(image_path, level, score):
+    colorama.init()
+
     basename = os.path.splitext(image_path)[0]
     answer_path = basename + "_ans.txt"
     sudoku = Sudoku(image_path, answer_path)
-
     output = solve(sudoku.image)
 
     assert isinstance(output, np.ndarray), "Return NumPy's NDArray!"
