@@ -1,13 +1,14 @@
 import os
 import re
+import sys
 import glob
+import logging
+from logging import INFO
 
 import cv2
 import numpy as np
 import pytest
-import colorama
 from sudoku import solve
-from colorama import Fore
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 EXTRA_DIR = os.path.join(CUR_DIR, "extra")
@@ -15,6 +16,9 @@ if len(list(os.listdir(EXTRA_DIR))) != 0:
     DATA_DIR = os.path.join(EXTRA_DIR, "data", "sudoku")
 else:
     DATA_DIR = os.path.join(CUR_DIR, "data")
+
+
+logger = logging.getLogger(__file__)
 
 
 def get_test_data():
@@ -48,13 +52,13 @@ class Sudoku(object):
 def score():
     score = np.zeros((1), dtype="int32")
     yield score
-    print("\n\n")
-    print(Fore.BLUE + "[INFO] Your score:  {:d}".format(score.item()), flush=True, end="")
+
+    logger.info("Your score: {:d}\n".format(score.item()))
 
 
 @pytest.mark.parametrize("image_path, level", get_test_data())
-def test_solve(image_path, level, score):
-    colorama.init()
+def test_solve(image_path, level, score, caplog):
+    caplog.set_level(INFO)
 
     basename = os.path.splitext(image_path)[0]
     answer_path = basename + "_ans.txt"
