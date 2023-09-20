@@ -10,14 +10,18 @@ from sudoku import solve
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 EXTRA_DIR = os.path.join(CUR_DIR, "extra")
 if len(list(os.listdir(EXTRA_DIR))) != 0:
-    CUR_DIR = EXTRA_DIR
+    DATA_DIR = os.path.join(EXTRA_DIR, "data")
+else:
+    DATA_DIR = os.path.join(CUR_DIR, "data")
 
 
 def get_test_data():
     levels = [1, 2, 3]
     data = []
     for level in levels:
-        image_paths = glob.glob(os.path.join(CUR_DIR, "data/level{:d}/*.jpg".format(level)))
+        jpg_paths = glob.glob(os.path.join(DATA_DIR, "level{:d}/*.jpg".format(level)))
+        png_paths = glob.glob(os.path.join(DATA_DIR, "level{:d}/*.png").format(level))
+        image_paths = jpg_paths + png_paths
         data.extend([(path, level) for path in image_paths])
 
     return data
