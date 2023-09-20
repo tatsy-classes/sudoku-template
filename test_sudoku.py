@@ -70,7 +70,11 @@ def test_solve(image_path, level, score, caplog):
     assert output.ndim == 2, "#dimensions of NumPy array must be 2!"
     assert output.shape[0] == 9 and output.shape[1] == 9, "Size of the NumPy array must be 9x9!"
 
-    if np.all(output == sudoku.answer):
+    n_all = 81
+    n_correct = np.sum(output == sudoku.answer)
+    if n_correct == n_all:
         score += level
     else:
-        pytest.fail("Your output does not match the answer!!")
+        pytest.fail(
+            "Your answer is wrong: {:d}/{:d} cells does not match!".format(n_correct, n_all)
+        )
