@@ -3,7 +3,7 @@
     {
       "name": "Grading",
       "setup": "sudo -H pip3 install -r requirements.txt",
-      "run": "pytest -s",
+      "run": "pytest --tb=no",
       "input": "",
       "output": "",
       "comparison": "included",
