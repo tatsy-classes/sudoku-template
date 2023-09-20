@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import glob
 
 import cv2
@@ -10,7 +11,7 @@ from sudoku import solve
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 EXTRA_DIR = os.path.join(CUR_DIR, "extra")
 if len(list(os.listdir(EXTRA_DIR))) != 0:
-    DATA_DIR = os.path.join(EXTRA_DIR, "data")
+    DATA_DIR = os.path.join(EXTRA_DIR, "data", "sudoku")
 else:
     DATA_DIR = os.path.join(CUR_DIR, "data")
 
@@ -49,11 +50,10 @@ def score():
     print("\n\nYour score is {:d}".format(score.item()))
 
 
-@pytest.mark.parametrize("data", get_test_data())
-def test_solve(data, score):
-    image_path, level = data
+@pytest.mark.parametrize("image_path, level", get_test_data())
+def test_solve(image_path, level, score):
     basename = os.path.splitext(image_path)[0]
-    answer_path = basename + "_answer.txt"
+    answer_path = basename + "_ans.txt"
     sudoku = Sudoku(image_path, answer_path)
 
     output = solve(sudoku.image)
