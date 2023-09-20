@@ -8,6 +8,9 @@ import pytest
 from sudoku import solve
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
+EXTRA_DIR = os.path.join(CUR_DIR, "extra")
+if len(list(os.listdir(EXTRA_DIR))) != 0:
+    CUR_DIR = EXTRA_DIR
 
 
 def get_test_data():

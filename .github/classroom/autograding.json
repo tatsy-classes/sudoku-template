@@ -2,7 +2,7 @@
   "tests": [
     {
       "name": "Grading",
-      "setup": "sudo -H pip3 install pytest numpy scikit-learn opencv-python pandas matplotlib",
+      "setup": "sudo -H pip3 install -r requirements.txt",
       "run": "pytest",
       "input": "",
       "output": "",
