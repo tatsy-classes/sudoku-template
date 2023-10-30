@@ -1,12 +1,11 @@
-import glob
 import os
 import re
+import glob
 
-import colorama
 import cv2
 import numpy as np
 import pytest
-
+import colorama
 from sudoku import solve
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -134,9 +133,7 @@ def test_solve(image_path: str, level: int, score):
     assert isinstance(output, np.ndarray), "Return NumPy's NDArray!"
     assert output.dtype == np.int32, "Return NumPy array with int32 data type!"
     assert output.ndim == 2, "#dimensions of NumPy array must be 2!"
-    assert (
-        output.shape[0] == 9 and output.shape[1] == 9
-    ), "Size of the NumPy array must be 9x9!"
+    assert output.shape[0] == 9 and output.shape[1] == 9, "Size of the NumPy array must be 9x9!"
 
     succ, msg = check(output, sudoku.problem)
     if succ:
