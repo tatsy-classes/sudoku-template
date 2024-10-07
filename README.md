@@ -1,7 +1,13 @@
 数独ソルバーの作成
 ===
 
-## 準備
+<details>
+<summary>
+
+準備 (全課題共通)
+---
+
+</summary>
 
 ### GitHubのアカウントを作成
 
@@ -36,45 +42,75 @@ ssh-keygen -t rsa -b 4096
 
 公開鍵のファイル`id_rsa.pub`を何らかのエディタで開いて、その内容をコピーする。GitHubに移動し、右上のユーザアイコンをクリックし「Settings」を選ぶ。その後、「SSH and GPG keys」を左のメニューから選び、「SSH Keys」の右にある「New SSH key」ボタンを押して、現れるテキストボックスに先ほど`id_rsa.pub`からコピーした内容を貼り付けて、「Add SSH key」を押す。
 
-### 課題用レポジトリの作成
+</details>
 
-講義中に指示する課題作成用URLにアクセスし、手順に従って、課題用のレポジトリである`sudoku-solver-username` (usernameの部分は各自のユーザ名)を作成する。
+課題テンプレートのダウンロード
+---
+
+講義中に指示する[GitHub Classroom](https://classroom.github.com/classrooms)の課題作成用URLにアクセスし、手順に従って、課題用のレポジトリである`sudoku-solver-username`が作成される (`username`の部分は各自のGitHubアカウント名に読み替えること)。
 
 ### レポジトリのクローン
 
-再び、ローカルの環境に戻り、Gitレポジトリをクローンする。正しく、公開鍵が登録されていれば、以下のコマンドでレポジトリがクローンされる。
+再び、ローカルの環境に戻り、WindowsならコマンドプロンプトかPowerShell, Macならターミナルを開いて、**Gitレポジトリをクローン**する。正しく、公開鍵が登録されていれば、以下のコマンドでレポジトリがクローンされる。
 
 ```shell
+# Gitレポジトリのクローン
 git clone git@github.com:tatsy-classes/sudoku-solver-username.git
 ```
 
-### モジュールのインストール
+### 仮想環境の作成
 
-Anacondaを使っている場合は適当な課題用の仮想環境を作成し、その環境下でPipを用いて必要なモジュールをインストールする
+適当な方法で開発用の仮想環境を作成し、Pipで必要なモジュールをインストールする。以下では`.venv`というディレクトリにvenvの仮想環境を作る方法を示す。
 
 ```shell
 # 仮想環境の作成
-conda create -n sudoku python
+python -m venv .venv
 # 仮想環境の切り替え
-conda activate sudoku
+.venv/Scripts/activate  # Windows
+source .venv/bin/activate  # Mac/Linux
 # モジュールのインストール
 pip install -r requirements.txt
 ```
 
-
-## 課題の作成方法
+課題の作成
+---
 
 ### ソルバー関数の編集
 
-課題用レポジトリ (本レポジトリ)に含まれる `sudoku.py`を編集して、正しい数独の解が得られるプログラムに修正する。
+課題用レポジトリに含まれる `sudoku.py`を編集(**ファイル名は変更しないこと**)して、正しい数独の解が得られるプログラムに修正する。
 
 ### テスト方法
 
 `data`ディレクトリの中に1枚ずつサンプルの画像が入っているのでそれを利用して良い。また、講義の参加者には`data/samples.zip`の展開用パスワードを指示するので、このZIPファイルに含まれる各レベル5枚のサンプル画像も合わせて使用して良い。準備ができたら、`pytest`を使ってテストを実行する。
 
 ```shell
-# ログを全て表示する場合
+# 汎用的なテスト
 pytest 
-# 結果だけを表示する場合
-pytest --tb=no -s
+# 実行状況を細かく表示する場合
+pytest --tb=long
 ```
+
+### サーバー上でのテスト方法
+
+`sudoku.py`に行った編集をGitHub上のレポジトリにコミット、プッシュすると、GitHub Actionsの機能を用いて自動採点が実施される。変更をコミット、プッシュするためのコマンドの一例は以下の通り。
+
+```shell
+# リポジトリのルートディレクトリで以下を実行する
+# -----
+## ローカルの更新状況を確認
+git status -u
+## ローカルの変更をGitの履歴に反映
+git add -u
+## 必要に応じて自分で作成したファイルも追加
+git add "/file/name/you/wanna/track"
+## コミット
+git commit -m "コミットコメント (適宜更新内容を入力)"
+## プッシュ
+git push origin master
+```
+
+**注意:** 作成したデータセットはレポジトリのファイルサイズ制限に引っかかるのでアップロードしないこと。
+
+### 実行時間の制約
+
+実行時間は1問当たり最大1分とする。それ以上が経過すると、自動的にプログラムが終了するので注意すること。
