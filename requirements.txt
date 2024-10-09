@@ -1,5 +1,8 @@
 numpy
+tqdm
 pandas
+joblib
+pillow
 matplotlib
 scikit-learn
 opencv-python
