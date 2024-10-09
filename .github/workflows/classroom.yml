@@ -10,7 +10,7 @@ permissions:
   contents: read
 
 jobs:
-  autograding:
+  run-autograding-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -35,7 +35,7 @@ jobs:
         with:
           test-name: Level1-1
           command: pytest --path check/level1/level1_1.jpg
-          timeout: 1
+          timeout: 0.25
           max-score: 1
       - name: Level1-2
         id: level102
@@ -43,11 +43,11 @@ jobs:
         with:
           test-name: Level1-2
           command: pytest --path check/level1/level1_2.jpg
-          timeout: 1
+          timeout: 0.25
           max-score: 1
       - name: Level1-3
         id: level103
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-3
           command: pytest --path check/level1/level1_3.jpg
@@ -55,7 +55,7 @@ jobs:
           max-score: 1
       - name: Level1-4
         id: level104
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-4
           command: pytest --path check/level1/level1_4.jpg
@@ -63,7 +63,7 @@ jobs:
           max-score: 1
       - name: Level1-5
         id: level105
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-5
           command: pytest --path check/level1/level1_5.jpg
@@ -71,7 +71,7 @@ jobs:
           max-score: 1
       - name: Level1-6
         id: level106
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-6
           command: pytest --path check/level1/level1_6.jpg
@@ -79,7 +79,7 @@ jobs:
           max-score: 1
       - name: Level1-7
         id: level107
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-7
           command: pytest --path check/level1/level1_7.jpg
@@ -87,7 +87,7 @@ jobs:
           max-score: 1
       - name: Level1-8
         id: level108
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-8
           command: pytest --path check/level1/level1_8.jpg
@@ -95,7 +95,7 @@ jobs:
           max-score: 1
       - name: Level1-9
         id: level109
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-9
           command: pytest --path check/level1/level1_9.jpg
@@ -103,7 +103,7 @@ jobs:
           max-score: 1
       - name: Level1-10
         id: level110
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: Level1-10
           command: pytest --path check/level1/level1_10.jpg
@@ -112,7 +112,7 @@ jobs:
 
       - name: level2-1
         id: level201
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-1
           command: pytest --path check/level2/level2_1.jpg
@@ -120,7 +120,7 @@ jobs:
           max-score: 2
       - name: level2-2
         id: level202
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-2
           command: pytest --path check/level2/level2_2.jpg
@@ -128,7 +128,7 @@ jobs:
           max-score: 2
       - name: level2-3
         id: level203
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-3
           command: pytest --path check/level2/level2_3.jpg
@@ -136,7 +136,7 @@ jobs:
           max-score: 2
       - name: level2-4
         id: level204
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-4
           command: pytest --path check/level2/level2_4.jpg
@@ -144,7 +144,7 @@ jobs:
           max-score: 2
       - name: level2-5
         id: level205
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-5
           command: pytest --path check/level2/level2_5.jpg
@@ -152,7 +152,7 @@ jobs:
           max-score: 2
       - name: level2-6
         id: level206
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-6
           command: pytest --path check/level2/level2_6.jpg
@@ -160,7 +160,7 @@ jobs:
           max-score: 2
       - name: level2-7
         id: level207
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-7
           command: pytest --path check/level2/level2_7.jpg
@@ -168,7 +168,7 @@ jobs:
           max-score: 2
       - name: level2-8
         id: level208
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-8
           command: pytest --path check/level2/level2_8.jpg
@@ -176,7 +176,7 @@ jobs:
           max-score: 2
       - name: level2-9
         id: level209
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-9
           command: pytest --path check/level2/level2_9.jpg
@@ -184,7 +184,7 @@ jobs:
           max-score: 2
       - name: level2-10
         id: level210
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level2-10
           command: pytest --path check/level2/level2_10.jpg
@@ -193,7 +193,7 @@ jobs:
 
       - name: level3-1
         id: level301
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-1
           command: pytest --path check/level3/level3_1.jpg
@@ -201,7 +201,7 @@ jobs:
           max-score: 3
       - name: level3-2
         id: level302
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-2
           command: pytest --path check/level3/level3_2.jpg
@@ -209,7 +209,7 @@ jobs:
           max-score: 3
       - name: level3-3
         id: level303
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-3
           command: pytest --path check/level3/level3_3.jpg
@@ -217,7 +217,7 @@ jobs:
           max-score: 3
       - name: level3-4
         id: level304
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-4
           command: pytest --path check/level3/level3_4.jpg
@@ -225,7 +225,7 @@ jobs:
           max-score: 3
       - name: level3-5
         id: level305
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-5
           command: pytest --path check/level3/level3_5.jpg
@@ -233,7 +233,7 @@ jobs:
           max-score: 3
       - name: level3-6
         id: level306
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-6
           command: pytest --path check/level3/level3_6.jpg
@@ -241,7 +241,7 @@ jobs:
           max-score: 3
       - name: level3-7
         id: level307
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-7
           command: pytest --path check/level3/level3_7.jpg
@@ -249,7 +249,7 @@ jobs:
           max-score: 3
       - name: level3-8
         id: level308
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-8
           command: pytest --path check/level3/level3_8.jpg
@@ -257,7 +257,7 @@ jobs:
           max-score: 3
       - name: level3-9
         id: level309
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-9
           command: pytest --path check/level3/level3_9.jpg
@@ -265,24 +265,16 @@ jobs:
           max-score: 3
       - name: level3-10
         id: level310
-        uses: classroom-resources/autograding-command-grader@v1
+        uses: education/autograding-command-grader@v1
         with:
           test-name: level3-10
           command: pytest --path check/level3/level3_10.jpg
           timeout: 0.25
           max-score: 3
 
-      - name: Check
-        run: |
-          echo $GITHUB_REPOSITORY
-          echo $GITHUB_RUN_ID
-
       - name: Autograding Reporter
         uses: education/autograding-grading-reporter@v1
         env:
-          GITHUB_REPOSITORY: $GITHUB_REPOSITORY
-          GITHUB_RUN_ID: $GITHUB_RUN_ID
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           LEVEL101_RESULTS: "${{ steps.level101.outputs.result }}"
           LEVEL102_RESULTS: "${{ steps.level102.outputs.result }}"
           LEVEL103_RESULTS: "${{ steps.level103.outputs.result }}"
