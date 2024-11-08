@@ -20,4 +20,8 @@ target-version = ["py310"]
 line-length = 99
 
 [tool.pytest.ini_options]
-addopts = "--tb=short -s test_sudoku.py"
+minversion = "8"
+xfail_strict = true
+addopts = ["--tb=no", "-s"]
+testpaths = ["test_sudoku.py"]
+log_cli_level = "DEBUG"
