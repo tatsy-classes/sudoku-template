@@ -123,4 +123,4 @@ git push origin master
 
 の2つを提出する。
 
-コミットのSHA値の取得方法については、講義資料中の[SHA値の取得方法](https://tatsy-classes.github.io/1284-sds-advml/contents/appendix/submit-assignment.html#sha)を参照のこと。
+コミットのSHA値の取得方法については、講義資料中の[SHA値の取得方法](https://tatsy.github.io/1284-sds-advml/contents/appendix/submit-assignment.html#sha)を参照のこと。
