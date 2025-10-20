@@ -1,11 +1,10 @@
-数独ソルバーの作成
-===
+# 数独ソルバーの作成
+
 
 <details>
 <summary>
 
-準備 (全課題共通)
----
+## 準備 (全課題共通)
 
 </summary>
 
@@ -114,3 +113,14 @@ git push origin master
 ### 実行時間の制約
 
 実行時間は1問当たり最大15秒に設定してある。それ以上が経過すると、自動的にプログラムが終了するので注意すること。
+
+## 課題の提出方法
+
+プログラムの作成が終了したら、Google Classroomから、
+
+- 採点してほしいコミットのSHA値
+- 取組内容を説明したレポート (目安A4用紙1毎程度. PDF, Microsoft Wordのいずれか)
+
+の2つを提出する。
+
+コミットのSHA値の取得方法については、講義資料中の[SHA値の取得方法](https://tatsy-classes.github.io/1284-sds-advml/contents/appendix/submit-assignment.html#sha)を参照のこと。
