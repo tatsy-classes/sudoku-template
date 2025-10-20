@@ -85,6 +85,8 @@ pip install -r requirements.txt
 pytest 
 # 実行状況を細かく表示する場合
 pytest --tb=long
+# 特定の名前を含むテストを実行したい場合
+pytest -k "部分文字列"
 ```
 
 ### サーバー上でのテスト方法
@@ -103,7 +105,7 @@ git add "/file/name/you/wanna/track"
 ## コミット
 git commit -m "コミットコメント (適宜更新内容を入力)"
 ## プッシュ
-git push origin master
+git push origin main
 ```
 
 **注意:** 作成したデータセットはレポジトリのファイルサイズ制限に引っかかるのでアップロードしないこと。
