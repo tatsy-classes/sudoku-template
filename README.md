@@ -1,6 +1,5 @@
 # 数独ソルバーの作成
 
-
 <details>
 <summary>
 
@@ -43,8 +42,7 @@ ssh-keygen -t rsa -b 4096
 
 </details>
 
-課題テンプレートのダウンロード
----
+## 課題テンプレートのダウンロード
 
 講義中に指示する[GitHub Classroom](https://classroom.github.com/classrooms)の課題作成用URLにアクセスし、手順に従って、課題用のレポジトリである`sudoku-solver-username`が作成される (`username`の部分は各自のGitHubアカウント名に読み替えること)。
 
@@ -71,8 +69,8 @@ source .venv/bin/activate  # Mac/Linux
 pip install -r requirements.txt
 ```
 
-課題の作成
----
+## 課題の作成
+
 
 ### ソルバー関数の編集
 
