@@ -26,100 +26,176 @@ Windowsの場合にはGitが最初からインストールされていないの�
 
 ### SSHキーの登録
 
-現在、GitHubはSSHの認証鍵を使わないとプライベートレポジトリをダウンロードできないので、SSHキーをGitHubアカウントに登録する。
-
 Windows/Macともに、以下のコマンドで4096ビット長のRSA鍵を作成する。
 
 ```shell
 ssh-keygen -t rsa -b 4096
 ```
 
-途中、パスワードの入力などを求められるが、特に不要なら入力する必要はない。
-
-コマンドが正しく実行されると、ホームディレクトリの`.ssh`ディレクトリ内に`id_rsa`と`id_rsa.pub`の二つのファイルが生成される。この二つのうち、`id_rsa`の方は秘密鍵、`id_rsa.pub`の方は公開鍵のファイルである。サーバーに登録して良いのは公開鍵の方。
-
-公開鍵のファイル`id_rsa.pub`を何らかのエディタで開いて、その内容をコピーする。GitHubに移動し、右上のユーザアイコンをクリックし「Settings」を選ぶ。その後、「SSH and GPG keys」を左のメニューから選び、「SSH Keys」の右にある「New SSH key」ボタンを押して、現れるテキストボックスに先ほど`id_rsa.pub`からコピーした内容を貼り付けて、「Add SSH key」を押す。
+ホームディレクトリの`.ssh`ディレクトリ内に生成された`id_rsa.pub`の内容をGitHubの「Settings」→「SSH and GPG keys」から登録する。`id_rsa`は秘密鍵なので公開しないこと。
 
 </details>
 
 ## 課題テンプレートのダウンロード
 
-講義中に指示する[GitHub Classroom](https://classroom.github.com/classrooms)の課題作成用URLにアクセスし、手順に従って、課題用のレポジトリである`sudoku-solver-username`が作成される (`username`の部分は各自のGitHubアカウント名に読み替えること)。
+講義中に指示する[GitHub Classroom](https://classroom.github.com/classrooms)の課題作成用URLにアクセスし、手順に従って課題用レポジトリを作成する。
 
 ### レポジトリのクローン
 
-再び、ローカルの環境に戻り、WindowsならコマンドプロンプトかPowerShell, Macならターミナルを開いて、**Gitレポジトリをクローン**する。正しく、公開鍵が登録されていれば、以下のコマンドでレポジトリがクローンされる。
-
 ```shell
-# Gitレポジトリのクローン
 git clone git@github.com:tatsy-classes/sudoku-solver-username.git
 ```
 
+`username`の部分は各自のGitHubアカウント名に読み替えること。
+
 ### 仮想環境の作成
 
-適当な方法で開発用の仮想環境を作成し、Pipで必要なモジュールをインストールする。以下では`.venv`というディレクトリにvenvの仮想環境を作る方法を示す。
-
 ```shell
-# 仮想環境の作成
 python -m venv .venv
-# 仮想環境の切り替え
-.venv/Scripts/activate  # Windows
-source .venv/bin/activate  # Mac/Linux
-# モジュールのインストール
+.venv/Scripts/activate       # Windows
+source .venv/bin/activate    # Mac/Linux
 pip install -r requirements.txt
 ```
 
 ## 課題の作成
 
+課題用レポジトリに含まれる`sudoku.py`を編集し、画像から数独問題を認識して、その問題を解くプログラムを作成する。ファイル名は変更しないこと。
 
-### ソルバー関数の編集
+今回の課題では、処理を次の2段階に分ける。
 
-課題用レポジトリに含まれる `sudoku.py`を編集(**ファイル名は変更しないこと**)して、正しい数独の解が得られるプログラムに修正する。
-
-### テスト方法
-
-`data`ディレクトリの中に1枚ずつサンプルの画像が入っているのでそれを利用して良い。また、講義の参加者には`data/samples.zip`の展開用パスワードを指示するので、このZIPファイルに含まれる各レベル5枚のサンプル画像も合わせて使用して良い。準備ができたら、`pytest`を使ってテストを実行する。
-
-```shell
-# 汎用的なテスト
-pytest 
-# 実行状況を細かく表示する場合
-pytest --tb=long
-# 特定の名前を含むテストを実行したい場合
-pytest -k "部分文字列"
+```text
+image
+  ↓
+recognize(image, level)
+  ↓
+problem
+  ↓
+solve(problem)
+  ↓
+answer
 ```
 
-### サーバー上でのテスト方法
+### `recognize(image, level)`
 
-`sudoku.py`に行った編集をGitHub上のレポジトリにコミット、プッシュすると、GitHub Actionsの機能を用いて自動採点が実施される。変更をコミット、プッシュするためのコマンドの一例は以下の通り。
+画像から元の9x9の数独問題を認識する。
+
+```python
+def recognize(image, level) -> np.ndarray:
+    ...
+```
+
+返り値は`dtype=np.int32`, `shape=(9, 9)`のNumPy配列とする。
+
+- `1`〜`9`: 認識した数字
+- `0`: 空欄、または数字はあるが認識に自信がないセル
+
+無理に数字を推測して間違えるより、分からないセルを`0`として返してよい。後段の`solve()`では、数独の制約を利用して認識結果の欠落や矛盾を補う工夫を行ってもよい。
+
+### `solve(problem)`
+
+`recognize()`が返した9x9配列から完成盤面を求める。
+
+```python
+def solve(problem) -> np.ndarray:
+    ...
+```
+
+返り値は`dtype=np.int32`, `shape=(9, 9)`で、全セルが`1`〜`9`の完成盤面になっている必要がある。
+
+採点時も必ず`recognize()`の返り値がそのまま`solve()`へ渡される。`solve()`から元画像を直接参照することはできない。
+
+## 難易度について
+
+課題にはLevel 1〜3がある。
+
+- **Level 1**: 基本的な画像
+- **Level 2**: Level 1より難しい画像
+- **Level 3**: challenge level
+
+Level 2まで十分に処理できれば、この課題としては良好な達成度である。Level 3まで高精度に処理できればかなり良い結果と考えてよい。
+
+## 採点方法
+
+採点は **Recognition 60点 + Final 60点 = 合計120点** で行う。
+
+### Recognition: 最大60点
+
+hidden画像10枚について、元の問題をどれだけ正しく認識したかをLevelごとにmicro F1で評価する。
+
+- TP: 正しい数字を正しく認識
+- FP: 非0を出力したが正解と異なる
+- FN: 本来数字があるが正解と一致しない
+
+別の数字へ誤認した場合はFP=1かつFN=1として数える。
+
+```text
+F1 = 2 TP / (2 TP + FP + FN)
+```
+
+各LevelでF1が0.2, 0.4, 0.6, 0.8, 1.0を超えるたびに加点される。
+
+| Level | 1 thresholdあたり | 最大 |
+|---|---:|---:|
+| 1 | 2点 | 10点 |
+| 2 | 4点 | 20点 |
+| 3 | 6点 | 30点 |
+
+### Final: 最大60点
+
+Recognitionの出力を`solve()`へ渡して得られた完成盤面を、hidden画像ごとに採点する。
+
+| Level | 1問あたり | 10問合計 |
+|---|---:|---:|
+| 1 | 1点 | 10点 |
+| 2 | 2点 | 20点 |
+| 3 | 3点 | 30点 |
+
+## テスト方法
+
+`data`ディレクトリのサンプル画像を利用してローカルテストできる。講義中に案内する追加サンプルも利用してよい。
 
 ```shell
-# リポジトリのルートディレクトリで以下を実行する
-# -----
-## ローカルの更新状況を確認
+pytest
+```
+
+RecognitionのF1を表示したい場合は、標準出力を表示して実行する。
+
+```shell
+pytest -s -k recognition
+```
+
+Finalのみ確認したい場合は、
+
+```shell
+pytest -k final
+```
+
+とする。
+
+## サーバー上でのテスト方法
+
+`sudoku.py`の変更をGitHubへコミット・プッシュするとGitHub Actionsによる自動採点が実行される。
+
+```shell
 git status -u
-## ローカルの変更をGitの履歴に反映
 git add -u
-## 必要に応じて自分で作成したファイルも追加
-git add "/file/name/you/wanna/track"
-## コミット
-git commit -m "コミットコメント (適宜更新内容を入力)"
-## プッシュ
+git add "/file/name/you/wanna/track"  # 必要な場合のみ
+git commit -m "コミットコメント"
 git push origin main
 ```
 
-**注意:** 作成したデータセットはレポジトリのファイルサイズ制限に引っかかるのでアップロードしないこと。
+**注意:** 作成した大規模なデータセットはレポジトリへアップロードしないこと。
 
 ### 実行時間の制約
 
-実行時間は1問当たり最大15秒に設定してある。それ以上が経過すると、自動的にプログラムが終了するので注意すること。
+実行時間は**1画像当たり最大15秒**である。各画像は独立したプロセスで評価されるため、ある画像でタイムアウトやエラーが発生しても、他の画像の採点は継続される。
 
 ## 課題の提出方法
 
 プログラムの作成が終了したら、Google Classroomから、
 
 - 採点してほしいコミットのSHA値
-- 取組内容を説明したレポート (目安A4用紙1毎程度. PDF, Microsoft Wordのいずれか)
+- 取組内容を説明したレポート (目安A4用紙1枚程度、PDFまたはMicrosoft Word)
 
 の2つを提出する。
 
