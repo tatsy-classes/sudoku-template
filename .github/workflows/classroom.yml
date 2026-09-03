@@ -10,7 +10,11 @@ permissions:
   contents: read
 
 jobs:
+  # This repository is a public template, while sudoku-autograding is private.
+  # GitHub cannot resolve a private action from a public repository. Classroom
+  # creates private student repositories, where this job can access the action.
   run-autograding-tests:
+    if: github.repository != 'tatsy-classes/sudoku-template'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
