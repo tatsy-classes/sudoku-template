@@ -36,17 +36,17 @@ ssh-keygen -t rsa -b 4096
 
 </details>
 
-## 課題テンプレートのダウンロード
+## 課題用レポジトリのダウンロード
 
-講義中に指示する[GitHub Classroom](https://classroom.github.com/classrooms)の課題作成用URLにアクセスし、手順に従って課題用レポジトリを作成する。
+講義中に各自の課題用GitHubレポジトリを案内する。自分に割り当てられたレポジトリをローカル環境へクローンして使用すること。
 
 ### レポジトリのクローン
 
-```shell
-git clone git@github.com:tatsy-classes/sudoku-solver-username.git
-```
+課題用レポジトリのGitHubページでSSH URLを確認し、次のようにクローンする。
 
-`username`の部分は各自のGitHubアカウント名に読み替えること。
+```shell
+git clone <課題用レポジトリのSSH URL>
+```
 
 ### 仮想環境の作成
 

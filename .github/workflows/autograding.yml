@@ -1,0 +1,21 @@
+name: Autograding sudoku exercises
+
+on:
+  - push
+  - workflow_dispatch
+
+permissions:
+  contents: read
+
+jobs:
+  # The public template cannot access the private autograding action. The same
+  # workflow runs after this template is copied to each private student repo.
+  run-autograding-tests:
+    if: github.repository != 'tatsy-classes/sudoku-template'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Evaluate submission
+        # Use the refactoring branch until the corresponding autograding PR is merged.
+        uses: tatsy-classes/sudoku-autograding@main
