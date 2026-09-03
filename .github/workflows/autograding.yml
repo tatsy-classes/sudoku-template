@@ -18,4 +18,4 @@ jobs:
 
       - name: Evaluate submission
         # Use the refactoring branch until the corresponding autograding PR is merged.
-        uses: tatsy-classes/sudoku-autograding@refactor/classroom-independent-grading
+        uses: tatsy-classes/sudoku-autograding@main
