@@ -18,7 +18,7 @@ def get_test_data() -> dict[int, list[str]]:
     rng = np.random.RandomState(31415)
     result: dict[int, list[str]] = {}
     for level in (1, 2, 3):
-        image_paths = glob.glob(os.path.join(DATA_DIR, f"level{level:d}/*.jpg"))
+        image_paths = sorted(glob.glob(os.path.join(DATA_DIR, f"level{level:d}/*.jpg")))
         n_samples = min(10, len(image_paths))
         indices = rng.choice(len(image_paths), n_samples, replace=False)
         result[level] = [image_paths[i] for i in indices]
