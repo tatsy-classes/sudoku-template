@@ -7,7 +7,6 @@ data/
 fonts/
 .venv/
 
-uv.lock
 .DS_Store
 
 # C extensions
