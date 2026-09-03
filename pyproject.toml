@@ -36,13 +36,6 @@ length-sort = true
 lines-after-imports = 2
 split-on-trailing-comma = true
 
-[tool.ty.environment]
-python = ".venv"
-python-version = "3.11"
-
-[tool.ty.terminal]
-error-on-warning = false
-
 [tool.mypy]
 python_version = "3.11"
 follow_imports = "silent"
