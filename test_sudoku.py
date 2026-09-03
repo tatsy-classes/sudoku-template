@@ -1,130 +1,126 @@
-import os
-import re
 import glob
+import os
+from pathlib import Path
 
 import cv2
 import numpy as np
 import pytest
+import numpy.typing as npt
 
-from sudoku import solve
+from sudoku import recognize, solve
 
 CUR_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_DIR = os.path.join(CUR_DIR, "data")
 
 
-def get_test_data():
-    """
-    Collect test data with a random order
-    """
+def get_test_data() -> dict[int, list[str]]:
+    """Collect up to 10 sample images per level with a fixed random order."""
     rng = np.random.RandomState(31415)
-
-    levels = [1, 2, 3]
-    data = []
-    for level in levels:
-        image_paths = glob.glob(os.path.join(DATA_DIR, f"level{level:d}/*.jpg"))
+    result: dict[int, list[str]] = {}
+    for level in (1, 2, 3):
+        image_paths = sorted(glob.glob(os.path.join(DATA_DIR, f"level{level:d}/*.jpg")))
         n_samples = min(10, len(image_paths))
-        idx = rng.choice(len(image_paths), n_samples, replace=False)
-        image_paths = [image_paths[i] for i in idx]
-
-        data.extend([(path, level) for path in image_paths])
-
-    return data
+        indices = rng.choice(len(image_paths), n_samples, replace=False)
+        result[level] = [image_paths[i] for i in indices]
+    return result
 
 
-def check(answer, problem):
-    """
-    Check if given answer matches the solution to given problem
-    """
+TEST_DATA = get_test_data()
 
-    # check if the answer is the one from the problem
-    match = (answer == problem).astype("int32")
-    if not (match[problem != 0] == 1).all():
-        return (False, "Recognized numbers may be wrong")
 
-    # check each row
-    nums = list(range(1, 10))
+def load_problem(image_path: str) -> npt.NDArray[np.int32]:
+    text_path = Path(image_path).with_suffix(".txt")
+    text = text_path.read_text(encoding="utf-8")
+    digits = [int(char) for char in text if char in "0123456789"]
+    if len(digits) != 81:
+        raise ValueError(f"Expected 81 digits in {text_path}, got {len(digits)}")
+    return np.asarray(digits, dtype=np.int32).reshape(9, 9)
+
+
+def load_image(image_path: str) -> npt.NDArray[np.uint8]:
+    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
+    if image is None:
+        raise FileNotFoundError(image_path)
+    return cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+
+def validate_board(board: object, *, allow_zero: bool) -> None:
+    assert isinstance(board, np.ndarray), "Return NumPy's NDArray!"
+    assert board.dtype == np.int32, "Return NumPy array with int32 data type!"
+    assert board.shape == (9, 9), "Size of the NumPy array must be 9x9!"
+    lower = 0 if allow_zero else 1
+    assert np.logical_and(board >= lower, board <= 9).all(), (
+        f"Array values must be integers from {lower} to 9!"
+    )
+
+
+def recognition_stats(
+    prediction: npt.NDArray[np.int32],
+    problem: npt.NDArray[np.int32],
+) -> tuple[int, int, int]:
+    true_digit = problem != 0
+    same = prediction == problem
+    tp = int(np.count_nonzero(true_digit & same))
+    fp = int(np.count_nonzero((prediction != 0) & ~same))
+    fn = int(np.count_nonzero(true_digit & ~same))
+    return tp, fp, fn
+
+
+def check_solution(
+    answer: npt.NDArray[np.int32],
+    problem: npt.NDArray[np.int32],
+) -> tuple[bool, str]:
+    if not np.array_equal(answer[problem != 0], problem[problem != 0]):
+        return False, "Recognized numbers may be wrong"
+
+    expected = np.arange(1, 10, dtype=np.int32)
     for i in range(9):
-        s = set(answer[i])
-
-        ok = True
-        if 0 in s:
-            ok = False
-
-        if len(s) != 9:
-            ok = False
-
-        for n in nums:
-            if n not in s:
-                ok = False
-                break
-
-        if not ok:
-            return (False, "A row does not contain all numbers 1-9")
-
+        if not np.array_equal(np.sort(answer[i]), expected):
+            return False, "A row does not contain all numbers 1-9"
     for j in range(9):
-        s = set(answer[:, j])
-
-        ok = True
-        if 0 in s:
-            ok = False
-
-        if len(s) != 9:
-            ok = False
-
-        for n in nums:
-            if n not in s:
-                ok = False
-                break
-
-        if not ok:
-            return (False, "A column does not contain all numbers 1-9")
-
+        if not np.array_equal(np.sort(answer[:, j]), expected):
+            return False, "A column does not contain all numbers 1-9"
     for i in range(0, 9, 3):
         for j in range(0, 9, 3):
-            blk = answer[i : i + 3, j : j + 3].flatten()
-            s = set(blk)
-
-            ok = True
-
-            if 0 in s:
-                ok = False
-
-            if len(s) != 9:
-                ok = False
-
-            for n in nums:
-                if n not in s:
-                    ok = False
-                    break
-
-            if not ok:
-                return (False, "A block does not contain all numbers 1-9")
-
-    return (True, "Success")
+            block = answer[i : i + 3, j : j + 3].reshape(-1)
+            if not np.array_equal(np.sort(block), expected):
+                return False, "A block does not contain all numbers 1-9"
+    return True, "Success"
 
 
-@pytest.mark.parametrize("image_path, level", get_test_data())
-def test_solve(image_path: str, level: int):
-    basename = os.path.splitext(image_path)[0]
-    text_path = basename + ".txt"
+@pytest.mark.parametrize("level", (1, 2, 3))
+def test_recognition(level: int) -> None:
+    tp = fp = fn = 0
+    for image_path in TEST_DATA[level]:
+        image = load_image(image_path)
+        problem = load_problem(image_path)
+        prediction = recognize(image, level)
+        validate_board(prediction, allow_zero=True)
+        case_tp, case_fp, case_fn = recognition_stats(prediction, problem)
+        tp += case_tp
+        fp += case_fp
+        fn += case_fn
 
-    image = cv2.imread(image_path, cv2.IMREAD_COLOR)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+    denominator = 2 * tp + fp + fn
+    f1 = 0.0 if denominator == 0 else 2 * tp / denominator
+    print(f"Level {level} recognition F1: {f1:.4f} (TP={tp}, FP={fp}, FN={fn})")
 
-    num_dict = {str(i): i for i in range(0, 10)}
-    with open(text_path, "r") as f:
-        text = f.read()
 
-    text_chars = re.split(r"[\s]+", text)
-    text_chars = [c for line in text_chars for c in line]
-    text_chars = [num_dict[c] for c in text_chars if c != ""]
-    problem = np.array(text_chars, dtype="int32").reshape((9, 9))
-    answer = solve(image, level)
+@pytest.mark.parametrize(
+    "image_path, level",
+    [
+        (image_path, level)
+        for level, image_paths in TEST_DATA.items()
+        for image_path in image_paths
+    ],
+)
+def test_final(image_path: str, level: int) -> None:
+    image = load_image(image_path)
+    problem = load_problem(image_path)
+    prediction = recognize(image, level)
+    validate_board(prediction, allow_zero=True)
 
-    assert isinstance(answer, np.ndarray), "Return answer as numpy.ndarray!"
-    assert answer.dtype == np.int32, "Return answer with int32 data type!"
-    assert answer.ndim == 2, "Answer must be 2-dimensional array!"
-    assert answer.shape[0] == 9 and answer.shape[1] == 9, "Size of the answer must be 9x9!"
-
-    succ, msg = check(answer, problem)
-    assert succ, f"Your answer is wrong: {msg:s}"
+    answer = solve(prediction)
+    validate_board(answer, allow_zero=False)
+    success, message = check_solution(answer, problem)
+    assert success, f"Your answer is wrong: {message}"
